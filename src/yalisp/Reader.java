@@ -22,6 +22,8 @@ public class Reader {
 			return Long.valueOf(token);
 		if (token.matches("true|false"))
 			return Boolean.valueOf(token);
+		if (token.matches("nil"))
+			return null;
 		return new Symbol(token);
 	}
 

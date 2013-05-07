@@ -7,6 +7,8 @@ import java.util.*;
 public class Evaluator {
 
 	public static Object eval(Object obj, Map env) {
+		if (obj == null)
+			return null;
 		if (obj instanceof Number)
 			return obj;
 		if (obj instanceof Boolean)
@@ -31,7 +33,7 @@ public class Evaluator {
 			args.add(eval(o, env));
 		
 		// Is it a built-in?
-		if (asList("+", "=", ">").contains(method.name))
+		if (asList("+", "=", ">", "nil?").contains(method.name))
 			return evalBuiltin(method, args);
 		
 		Fn fn = (Fn) env.get(method);
@@ -45,12 +47,12 @@ public class Evaluator {
 				result += (Long) o;
 			return result;
 		}
-		if ("=".equals(method.name)) {
+		if ("=".equals(method.name))
 			return ((Long) args.get(0)) == ((Long) args.get(1));
-		}
-		if (">".equals(method.name)) {
+		if (">".equals(method.name))
 			return ((Long) args.get(0)) > ((Long) args.get(1));
-		}
+		if ("nil?".equals(method.name))
+			return args.get(0) == null;
 		throw new RuntimeException("Not a builtin: " + method);
 	}
 
