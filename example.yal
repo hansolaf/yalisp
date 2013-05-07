@@ -1,0 +1,29 @@
+; some example code
+; run me with: ./repl example.yal
+
+; variable for use in examples. 
+; holds a list with the following examples:
+; [5 1 5 2 6 8 13 13 100 31 45 654 12 0 34]
+(def list (cons 5 (cons 1 (cons 5 (cons 2 (cons 6 (cons 8 (cons 13 (cons 13 (cons 100 (cons 31 (cons 45 (cons 654 (cons 12 (cons 0 (cons 34 nil))))))))))))))))
+
+; simple function definition
+(defn even? (x) (= (% x 2) 0))
+(filter even? list)
+
+; example of curryed function
+(((fn (x) (fn (y) (+ x y))) 3) 2)
+
+; append function
+(defn append (L1 L2) (if (nil? L1) L2 (cons (car L1) (append (cdr L1) L2))))
+
+; quicksort helper functions
+(defn <= (x y) (if (= x y) true (if (< x y) true false)))
+(defn smallerOrEqual (list pivot) (filter (fn (x) (<= x pivot)) list))
+(defn larger (list pivot) (filter (fn (x) (> x pivot)) list))
+
+; quicksort
+(defn quicksort (list) (if (nil? list) list (append (append (quicksort (smallerOrEqual (cdr list) (car list))) (cons (car list) nil)) (quicksort (larger list (car list))))))
+
+; quicksort test
+list
+(quicksort list)
