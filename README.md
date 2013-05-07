@@ -11,7 +11,7 @@ Yet another simple Lisp written in Java. Lacking most functionality you would ex
 # Example code
 
  ```lisp
-(defn larger-than (x) (fn (y) (> y x)))
-(def larger-than-five (larger-than 5))
-(if (larger-than-five 23) (+ 1 1) (+ 2 2))
+(def stop 20)
+(defn even? (x) (= (% x 2) 0))
+(filter even? (range 1 stop))
  ```

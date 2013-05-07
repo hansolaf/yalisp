@@ -13,6 +13,9 @@ public class Core {
 	public static Map makeEnv() throws IOException {
 		Map env = new HashMap(INITIALENV);
 		eval(read("(defn nil? (x) (= x nil))"), env);
+		eval(read("(defn map (f coll) (if (nil? coll) nil (cons (f (car coll)) (map f (cdr coll)))))"), env);
+		eval(read("(defn filter (pred coll) (if (nil? coll) nil (if (pred (car coll)) (cons (car coll) (filter pred (cdr coll))) (filter pred (cdr coll)))))"), env);
+		eval(read("(defn range (start stop) (if (> start stop) nil (cons start (range (+ 1 start) stop))))"), env);
 		return env;
 	}
 
