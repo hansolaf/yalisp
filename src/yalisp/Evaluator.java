@@ -18,40 +18,22 @@ public class Evaluator {
 				throw new RuntimeException("Cannot find symbol " + obj + " in env " + env);
 			return env.get(obj);
 		}
-		
+
 		// Assume s-expression
 		List sexp = (List) obj;
 		Symbol method = (Symbol) sexp.get(0);
-		
+
 		// Is it a special form?
 		if (asList("def", "if", "fn", "defn").contains(method.name))
 			return evalSpecialForm(sexp, env);
-		
+
 		// Eval args
 		List args = new ArrayList();
 		for (Object o : sexp.subList(1, sexp.size()))
 			args.add(eval(o, env));
-		
-		// Is it a built-in?
-		if (asList("+", "=", ">").contains(method.name))
-			return evalBuiltin(method, args);
-		
+
 		Fn fn = (Fn) env.get(method);
 		return fn.invoke(args.toArray());
-	}
-
-	static Object evalBuiltin(Symbol method, List args) {
-		if ("+".equals(method.name)) {
-			Long result = 0L;
-			for (Object o : args)
-				result += (Long) o;
-			return result;
-		}
-		if ("=".equals(method.name))
-			return args.get(0) == args.get(1);
-		if (">".equals(method.name))
-			return ((Long) args.get(0)) > ((Long) args.get(1));
-		throw new RuntimeException("Not a builtin: " + method);
 	}
 
 	static Object evalSpecialForm(List sexp, final Map env) {
@@ -87,13 +69,58 @@ public class Evaluator {
 			}
 		};
 	}
-	
+
 	static interface Fn {
 		Object invoke(Object... args);
 	}
-	
+
 	static boolean isSymbolAnyOf(Symbol method, String... strings) {
 		return Arrays.asList(strings).contains(method.name);
 	}
+
+	public static final Map INITIALENV = new HashMap() {
+		{
+			put(new Symbol("="), new Fn() {
+				public Object invoke(Object... args) {
+					return args[0] == args[1];
+				};
+			});
+			put(new Symbol(">"), new Fn() {
+				public Object invoke(Object... args) {
+					return ((Long) args[0]) > ((Long) args[1]);
+				};
+			});
+			put(new Symbol("<"), new Fn() {
+				public Object invoke(Object... args) {
+					return ((Long) args[0]) < ((Long) args[1]);
+				};
+			});
+			put(new Symbol("%"), new Fn() {
+				public Object invoke(Object... args) {
+					return ((Long) args[0]) % ((Long) args[1]);
+				};
+			});
+			put(new Symbol("+"), new Fn() {
+				public Object invoke(Object... args) {
+					Long result = 0L;
+					for (Object o : args)
+						result += (Long) o;
+					return result;
+				};
+			});
+			put(new Symbol("-"), new Fn() {
+				public Object invoke(Object... args) {
+					if (args.length == 0)
+						return 0L;
+					if (args.length == 1)
+						return - (Long) args[0];
+					Long result = 0L;
+					for (Object o : args)
+						result -= (Long) o;
+					return result;
+				};
+			});
+		}
+	};
 
 }

@@ -9,7 +9,7 @@ import java.util.*;
 public class Repl {
 
 	public static void main(String[] args) throws IOException {
-		Map env = new HashMap();
+		Map env = Evaluator.INITIALENV;
 		eval(read("(defn nil? (x) (= x nil))"), env);
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		while (true) {
