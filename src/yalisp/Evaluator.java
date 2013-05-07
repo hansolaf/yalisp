@@ -21,18 +21,21 @@ public class Evaluator {
 
 		// Assume s-expression
 		List sexp = (List) obj;
-		Symbol method = (Symbol) sexp.get(0);
 
 		// Is it a special form?
-		if (asList("def", "if", "fn", "defn").contains(method.name))
+		if (sexp.get(0) instanceof Symbol 
+				&& asList("def", "if", "fn", "defn").contains(((Symbol) sexp.get(0)).name))
 			return evalSpecialForm(sexp, env);
-
+		
 		// Eval args
 		List args = new ArrayList();
 		for (Object o : sexp.subList(1, sexp.size()))
 			args.add(eval(o, env));
-
-		Fn fn = (Fn) env.get(method);
+		
+		// Call function
+		Fn fn = (sexp.get(0) instanceof Symbol) ? 
+				(Fn) env.get((Symbol) sexp.get(0)) : 
+				(Fn) eval(sexp.get(0), env);
 		return fn.invoke(args.toArray());
 	}
 
