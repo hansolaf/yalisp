@@ -16,13 +16,19 @@ public class Repl {
 	    try {
 	        String line = br.readLine();
 	        while (line != null) {
-	        	Object form = read(line);
-	    		System.out.println(eval(form, env));
+	        	process(line, env);
 	            line = br.readLine();
 	        }
 	    } finally {
 	        br.close();
 	    }
+	}
+	
+	private static void process(String input, Map env) throws IOException {
+		if (input.trim().equals(""))
+			return;
+		Object form = read(input);
+		System.out.println(eval(form, env));
 	}
 	
 	public static void main(String[] args) throws IOException {
@@ -34,11 +40,7 @@ public class Repl {
 			while (true) {
 				System.out.print("repl-> ");
 				try {
-					String input = in.readLine();
-					if (input.equals(""))
-						continue;
-					Object form = read(input);
-					System.out.println(eval(form, env));
+					process(in.readLine(), env);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
