@@ -78,49 +78,4 @@ public class Evaluator {
 		return Arrays.asList(strings).contains(method.name);
 	}
 
-	public static final Map INITIALENV = new HashMap() {
-		{
-			put(new Symbol("="), new Fn() {
-				public Object invoke(Object... args) {
-					return args[0] == args[1];
-				};
-			});
-			put(new Symbol(">"), new Fn() {
-				public Object invoke(Object... args) {
-					return ((Long) args[0]) > ((Long) args[1]);
-				};
-			});
-			put(new Symbol("<"), new Fn() {
-				public Object invoke(Object... args) {
-					return ((Long) args[0]) < ((Long) args[1]);
-				};
-			});
-			put(new Symbol("%"), new Fn() {
-				public Object invoke(Object... args) {
-					return ((Long) args[0]) % ((Long) args[1]);
-				};
-			});
-			put(new Symbol("+"), new Fn() {
-				public Object invoke(Object... args) {
-					Long result = 0L;
-					for (Object o : args)
-						result += (Long) o;
-					return result;
-				};
-			});
-			put(new Symbol("-"), new Fn() {
-				public Object invoke(Object... args) {
-					if (args.length == 0)
-						return 0L;
-					if (args.length == 1)
-						return - (Long) args[0];
-					Long result = 0L;
-					for (Object o : args)
-						result -= (Long) o;
-					return result;
-				};
-			});
-		}
-	};
-
 }

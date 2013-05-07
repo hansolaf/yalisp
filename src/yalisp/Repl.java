@@ -4,13 +4,12 @@ import static yalisp.Evaluator.eval;
 import static yalisp.Reader.read;
 
 import java.io.*;
-import java.util.*;
+import java.util.Map;
 
 public class Repl {
 
 	public static void main(String[] args) throws IOException {
-		Map env = Evaluator.INITIALENV;
-		eval(read("(defn nil? (x) (= x nil))"), env);
+		Map env = Core.makeEnv();
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		while (true) {
 			System.out.print("repl-> ");
