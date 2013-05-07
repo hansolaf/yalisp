@@ -22,7 +22,7 @@ public class Evaluator {
 		Symbol method = (Symbol) sexp.get(0);
 		
 		// Is it a special form?
-		if (asList("def", "if").contains(method.name))
+		if (asList("def", "if", "fn", "defn").contains(method.name))
 			return evalSpecialForm(sexp, env);
 		
 		// Eval args
@@ -34,7 +34,8 @@ public class Evaluator {
 		if (asList("+", "=", ">").contains(method.name))
 			return evalBuiltin(method, args);
 		
-		throw new RuntimeException("Unknown function " + method);
+		Fn fn = (Fn) env.get(method);
+		return fn.invoke(args.toArray());
 	}
 
 	static Object evalBuiltin(Symbol method, List args) {
@@ -53,7 +54,7 @@ public class Evaluator {
 		throw new RuntimeException("Not a builtin: " + method);
 	}
 
-	static Object evalSpecialForm(List sexp, Map env) {
+	static Object evalSpecialForm(List sexp, final Map env) {
 		String name = ((Symbol) sexp.get(0)).name;
 		if (name.equals("def")) {
 			env.put(sexp.get(1), eval(sexp.get(2), env));
@@ -63,7 +64,32 @@ public class Evaluator {
 			Boolean condition = (Boolean) eval(sexp.get(1), env);
 			return condition ? eval(sexp.get(2), env) : eval(sexp.get(3), env);
 		}
+		if (name.equals("fn"))
+			return makeFn((List) sexp.get(1), sexp.get(2), env);
+		if (name.equals("defn")) {
+			Symbol fnName = (Symbol) sexp.get(1);
+			Fn fn = makeFn((List) sexp.get(2), sexp.get(3), env);
+			env.put(fnName, fn);
+			return fnName;
+		}
 		throw new RuntimeException("Not a special form: " + sexp.get(0));
+	}
+
+	private static Fn makeFn(final List params, final Object body, final Map env) {
+		return new Fn() {
+			public Object invoke(Object... args) {
+				if (params.size() != args.length)
+					throw new RuntimeException("Function passed " + args.length + " expected " + params.size());
+				Map localEnv = new HashMap(env);
+				for (int i = 0; i < params.size(); i++)
+					localEnv.put(params.get(i), args[i]);
+				return eval(body, localEnv);
+			}
+		};
+	}
+	
+	static interface Fn {
+		Object invoke(Object... args);
 	}
 	
 	static boolean isSymbolAnyOf(Symbol method, String... strings) {
