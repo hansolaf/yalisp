@@ -11,6 +11,8 @@ public class Reader {
 
 	static Object read(PushbackReader in) throws IOException {
 		int c = in.read();
+		if (((char) c) == ';')
+			return new Comment();
 		if (((char) c) == '(')
 			return readSexp(in);
 		return readObject(c, in);

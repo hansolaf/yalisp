@@ -28,6 +28,8 @@ public class Repl {
 		if (input.trim().equals(""))
 			return;
 		Object form = read(input);
+		if (form instanceof Comment)
+			return;
 		System.out.println(eval(form, env));
 	}
 	
