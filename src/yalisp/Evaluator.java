@@ -61,13 +61,26 @@ public class Evaluator {
 	}
 
 	private static Fn makeFn(final List params, final Object body, final Map env) {
+		final boolean hasVarargParam = !params.isEmpty() && ((Symbol) params.get(params.size() - 1)).name.startsWith("&");
+		final int nofNormalArgs = hasVarargParam ? params.size() - 1 : params.size();
 		return new Fn() {
 			public Object invoke(Object... args) {
-				if (params.size() != args.length)
-					throw new RuntimeException("Function passed " + args.length + " expected " + params.size());
+				if ((hasVarargParam && args.length < nofNormalArgs) || (!hasVarargParam && args.length != nofNormalArgs))
+					throw new RuntimeException("Function passed " + args.length + " args expected " + params);
 				Map localEnv = new HashMap(env);
-				for (int i = 0; i < params.size(); i++)
+				for (int i = 0; i < params.size(); i++) {
+					Symbol paramName = (Symbol) params.get(i);
+					if (paramName.name.startsWith("&")) {
+						List restArgs = Arrays.asList(args).subList(i, args.length);
+						Collections.reverse(restArgs);
+						Cons list = null;
+						for (Object arg : restArgs)
+							list = new Cons(arg, list);
+						localEnv.put(new Symbol(paramName.name.substring(1)), list);
+						break;
+					}
 					localEnv.put(params.get(i), args[i]);
+				}
 				return eval(body, localEnv);
 			}
 		};
