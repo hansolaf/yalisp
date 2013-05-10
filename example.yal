@@ -10,9 +10,6 @@
 ; example of curryed function
 (((fn (x) (fn (y) (+ x y))) 3) 2)
 
-; append function
-(defn append (lst1 lst2) (if (nil? lst1) lst2 (cons (car lst1) (append (cdr lst1) lst2))))
-
 ; quicksort helper functions
 (defn <= (x y) (if (= x y) true (if (< x y) true false)))
 (defn smaller-or-equal (lst pivot) (filter (fn (x) (<= x pivot)) lst))

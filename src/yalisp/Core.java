@@ -17,6 +17,7 @@ public class Core {
 		eval(read("(defn map (f coll) (if (nil? coll) nil (cons (f (car coll)) (map f (cdr coll)))))"), env);
 		eval(read("(defn filter (pred coll) (if (nil? coll) nil (if (pred (car coll)) (cons (car coll) (filter pred (cdr coll))) (filter pred (cdr coll)))))"), env);
 		eval(read("(defn range (start stop) (if (> start stop) nil (cons start (range (+ 1 start) stop))))"), env);
+		eval(read("(defn append (lst1 lst2) (if (nil? lst1) lst2 (cons (car lst1) (append (cdr lst1) lst2))))"), env);
 		return env;
 	}
 
