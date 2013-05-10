@@ -21,9 +21,9 @@ public class Core {
 		eval(read("(defn foldl (f z lst) (if (nil? lst) z (foldl f (f z (car lst)) (cdr lst))))"), env);
 		eval(read("(defn sum (lst) (foldl + 0 lst))"), env);
 		eval(read("(defn not (a) (if a false true))"), env);
-		eval(read("(defn and (a b) (if a b false))"), env);
-		eval(read("(defn or (a b) (if a true b))"), env);
-		eval(read("(defn xor (a b) (if a (not b) b))"), env);
+		eval(read("(defn and (&items) (foldl (fn (a b) (if a b false)) true items))"), env);
+		eval(read("(defn xor (&items) (= 1 (sum (map (fn (a) (if a 1 0)) items))))"), env);
+		eval(read("(defn or (&items) (foldl (fn (a b) (if a true b)) false items))"), env);
 		return env;
 	}
 
