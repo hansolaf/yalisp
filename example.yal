@@ -1,9 +1,6 @@
 ; some example code
 ; run me with: ./repl example.yal
 
-; variable for use in examples. 
-; holds a list with the following examples:
-; [5 1 5 2 6 8 13 13 100 31 45 654 12 0 34]
 (def lst (list 5 1 5 2 6 8 13 13 100 31 45 654 12 0 34))
 
 ; simple function definition
@@ -14,15 +11,15 @@
 (((fn (x) (fn (y) (+ x y))) 3) 2)
 
 ; append function
-(defn append (L1 L2) (if (nil? L1) L2 (cons (car L1) (append (cdr L1) L2))))
+(defn append (lst1 lst2) (if (nil? lst1) lst2 (cons (car lst1) (append (cdr lst1) lst2))))
 
 ; quicksort helper functions
 (defn <= (x y) (if (= x y) true (if (< x y) true false)))
-(defn smallerOrEqual (lst pivot) (filter (fn (x) (<= x pivot)) lst))
+(defn smaller-or-equal (lst pivot) (filter (fn (x) (<= x pivot)) lst))
 (defn larger (lst pivot) (filter (fn (x) (> x pivot)) lst))
 
 ; quicksort
-(defn quicksort (lst) (if (nil? lst) lst (append (append (quicksort (smallerOrEqual (cdr lst) (car lst))) (cons (car lst) nil)) (quicksort (larger lst (car lst))))))
+(defn quicksort (lst) (if (nil? lst) lst (append (append (quicksort (smaller-or-equal (cdr lst) (car lst))) (cons (car lst) nil)) (quicksort (larger lst (car lst))))))
 
 ; quicksort test
 lst
