@@ -5,13 +5,14 @@
 
 ; simple function definition
 (defn even? (x) (= (% x 2) 0))
-(filter even? lst)
+(filter even? lst) ; => (2 6 8 100 654 12 0 34)
 
 ; example of curryed function
-(((fn (x) (fn (y) (+ x y))) 3) 2)
+(defn curryed-add (x) (fn (y) (+ x y)))
+((curryed-add 3) 2) ; => 5
 
 ; quicksort helper functions
-(defn <= (x y) (if (= x y) true (if (< x y) true false)))
+(defn <= (x y) (or (< x y) (= x y)))
 (defn smaller-or-equal (lst pivot) (filter (fn (x) (<= x pivot)) lst))
 (defn larger (lst pivot) (filter (fn (x) (> x pivot)) lst))
 
@@ -21,3 +22,6 @@
 ; quicksort test
 lst
 (quicksort lst)
+
+; test stdlib
+(xor (and true true) (not true))
